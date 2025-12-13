@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gender Reveal</title>
+
+  <style>
+    :root{
+      --greige-bg: #f3efe8;
+      --greige-card: #fbf8f3;
+      --text-dark: #2f2f2f;
+      --text-mid: #5a5a5a;
+      --blue: #87ceeb;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Segoe UI Emoji",
+        "Apple Color Emoji",
+        "Noto Color Emoji",
+        "Hiragino Sans",
+        Arial,
+        sans-serif;
+      background: var(--greige-bg);
+      color: var(--text-dark);
+      text-align: center;
+      padding: 48px 18px;
+    }
+
+    .wrap {
+      max-width: 560px;
+      margin: 0 auto;
+      background: var(--greige-card);
+      border-radius: 22px;
+      padding: 38px 18px 42px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    h1 {
+      font-size: 34px;
+      margin: 0 0 10px;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin: 0 0 28px;
+      color: var(--text-mid);
+      font-weight: 600;
+    }
+
+    button {
+      padding: 14px 28px;
+      font-size: 20px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background-color: var(--blue);
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 8px 16px rgba(135,206,235,0.35);
+    }
+
+    #revealArea {
+      display: none;
+      margin-top: 34px;
+    }
+
+    .revealText {
+      font-size: 46px;
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .itsa {
+      color: var(--text-dark);
+      margin-right: 6px;
+    }
+
+    .boy {
+      color: var(--blue);
+      text-shadow: 0 6px 14px rgba(135,206,235,0.35);
+    }
+
+    .balloons {
+      font-size: 44px;
+      margin-top: 8px;
+    }
+
+    canvas#confetti {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="confetti"></canvas>
+
+  <div class="wrap">
+    <!-- 初期表示 -->
+    <div id="startArea">
+      <h1>Welcome Baby 👶</h1>
+      <h2>Boy? or Girl?</h2>
+      <button onclick="reveal()">ボタンをクリック</button>
+    </div>
+
+    <!-- 発表後 -->
+    <div id="revealArea">
+      <div class="revealText">
+        <span class="itsa">It’s a</span>
+        <span class="boy">Boy💙</span>
+      </div>
+      <div class="balloons">🎈🎉👶🎉🎈</div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    function launchConfetti() {
+      const colors = ["#87ceeb", "#ffffff", "#d9cbb7"];
+      const pieces = [];
+
+      for (let i = 0; i < 120; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: -20 - Math.random() * 120,
+          size: 6 + Math.random() * 6,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          speedY: 3 + Math.random() * 4,
+          speedX: -2 + Math.random() * 4,
+          rot: Math.random() * 360
+        });
+      }
+
+      let frame = 0;
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        pieces.forEach(p => {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot * Math.PI / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+          ctx.restore();
+
+          p.y += p.speedY;
+          p.x += p.speedX;
+          p.rot += 6;
+        });
+
+        frame++;
+        if (frame < 100) {
+          requestAnimationFrame(draw);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      draw();
+    }
+
+    function reveal() {
+      document.getElementById("startArea").style.display = "none";
+      document.getElementById("revealArea").style.display = "block";
+      launchConfetti();
+    }
+  </script>
+</body>
+</html>
