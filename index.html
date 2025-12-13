@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gender Reveal</title>
+
+  <!-- ▼ LINEプレビュー対策：完全中立 -->
+  <title>Baby Surprise</title>
+  <meta name="description" content="リンクを開いてボタンを押してね🎁" />
 
   <style>
     :root{
@@ -109,24 +112,22 @@
   <canvas id="confetti"></canvas>
 
   <div class="wrap">
-    <!-- 初期表示 -->
+    <!-- 初期表示（ここは中立ワードのみ） -->
     <div id="startArea">
       <h1>Welcome Baby 👶</h1>
       <h2>Boy? or Girl?</h2>
       <button onclick="reveal()">ボタンをクリック</button>
     </div>
 
-    <!-- 発表後 -->
+    <!-- 発表後（最初は空） -->
     <div id="revealArea">
-      <div class="revealText">
-        <span class="itsa">It’s a</span>
-        <span class="boy">Boy💙</span>
-      </div>
-      <div class="balloons">🎈🎉👶🎉🎈</div>
+      <div class="revealText" id="revealText"></div>
+      <div class="balloons" id="revealEmojis"></div>
     </div>
   </div>
 
   <script>
+    /* ---------- 紙吹雪 ---------- */
     const canvas = document.getElementById("confetti");
     const ctx = canvas.getContext("2d");
 
@@ -156,7 +157,6 @@
       let frame = 0;
       function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         pieces.forEach(p => {
           ctx.save();
           ctx.translate(p.x, p.y);
@@ -180,9 +180,18 @@
       draw();
     }
 
+    /* ---------- 発表 ---------- */
     function reveal() {
       document.getElementById("startArea").style.display = "none";
       document.getElementById("revealArea").style.display = "block";
+
+      // ▼ 性別テキストは「ここで初めて」入れる（ネタバレ防止）
+      document.getElementById("revealText").innerHTML =
+        '<span class="itsa">It’s a</span> <span class="boy">Boy💙</span>';
+
+      document.getElementById("revealEmojis").textContent =
+        "🎈🎉👶🎉🎈";
+
       launchConfetti();
     }
   </script>
